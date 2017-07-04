@@ -273,13 +273,40 @@ namespace ConsoleControl
                 richTextBoxConsole.ReadOnly = false;
         }
 
+        public void StartProcess(string fileName, string arguments, string workingDirectory)
+        {
+            //  Are we showing diagnostics?
+            if (ShowDiagnostics)
+            {
+                WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
+                if (!string.IsNullOrEmpty(arguments))
+                    WriteOutput(" with arguments " + arguments + "." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+                else
+                    WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+            }
+
+            //  Start the process.
+            processInterace.StartProcess(fileName, arguments, workingDirectory);
+
+            //  If we enable input, make the control not read only.
+            if (IsInputEnabled)
+                richTextBoxConsole.ReadOnly = false;
+        }
+
         /// <summary>
         /// Stops the process.
         /// </summary>
         public void StopProcess()
         {
             //  Stop the interface.
-            processInterace.StopProcess();
+            try
+            {
+                processInterace.StopProcess();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
         
         /// <summary>
